@@ -246,7 +246,7 @@ module.exports = {
 	createTransaction
 }
 
-//binding functions to bjs 
+//binding functions to buidl 
 //browserify create.js --standalone buidl > buidl.js
 
 //main user preferred function names
