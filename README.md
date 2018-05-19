@@ -1,7 +1,6 @@
 # Buidl.js 
 
-Buidl.js is a bitcoinjs-lib wrapper. 
-
+Buidl.js is a bitcoinjs-lib wrapper. This is intended as a tool for developers, hobbyists and crypto-enthusiasts looking for an easy way to create bitcoin keys and build and sign transactions offline without having the hurdle of having to learn the bitcoinjs-lib library. Buidl.js is a simplified (and therefore less powerful) approach to pro grammatically working with bitcoin in javascript. It is NOT intended for production use -- it is 100% client-side javascript.
 
 # Usage
 0. Save a copy of buidl.js or clone the repo
@@ -28,8 +27,21 @@ Buidl.js is a bitcoinjs-lib wrapper.
 		</script>
 		</body>
 
+3. Create key pair from sha256 hash of an input aka brainwallet
 
-3. Get details of a private key
+		<head>
+		<script src="buidl.js"></script>
+		</head>
+		<body>
+		<script>
+		let newPair = buidl.createFrom("satoshi");
+		let address = newPair.addr;
+		let privateKey = newPair.pk;
+		console.log(address, privateKey);
+		</script>
+		</body>
+
+4. Get details of a private key
 
         <head>
 		<script src="buidl.js"></script>
@@ -43,7 +55,7 @@ Buidl.js is a bitcoinjs-lib wrapper.
 		</body>
 
 		
-4. Build and sign a transaction 
+5. Build and sign a transaction 
 
  * createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue)
  
@@ -62,8 +74,14 @@ Buidl.js is a bitcoinjs-lib wrapper.
 		createTransaction("b", "34eceJ...  > spending from p2wpk(bech32)
 
 		createTransaction("3", "34eceJ..", 0, "1P5Ef7FsaD1KsJNSTUcACceEWN9vsUe3eN", 350000, "L1RLQhjuGoQ37QP4jfaEFTHMuEUeh4JdUDkx32xeafhnpzRMDMXD", null, null, 4000000)
+		
+		//returns {"signedtx":"894291f54d..."}
 
+This function will return an object with the key "signedtx" which will contain the raw hex signed transaction that can now be broadcast to any node or API.		
+		
+See test.html for an example of using the `createTransaction()` function.    
 
+	
 ## Additional Info
 
 		

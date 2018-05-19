@@ -4,11 +4,77 @@
 <script src="buidl.js"></script>
 </head>
 <body>
+<table width="100%">
+<tr>
+	<td width="65%"><h3>INPUT</h3>
+		<table width="100%">
+		<tr>
+			<td width="10">Type</td>
+			<td width="60%">Transaction Hash/ID</td>
+			<td width="10%">N Out</td>
+			<td width="20%">Input Value</td>
+		</tr>
+		<tr>
+			<td><input type="text" id="typei" size="10" onkeyup="return checkWitness();"></td>
+			<td><input type="text" id="txidi" size="65"></td>
+			<td><input type="text" id="outni" size="10"></td>
+			<td><input type="text" id="inputvalue" size="20"></td>
+		</tr>
+		</table>
+	</td>
+	
+	<td><h3>OUTPUT(S)</h3>
+		<table width="100%">
+		<tr>
+			<td width="70%">Address</td>
+			<td width="30%">Value</td>
+			
+		</tr>
+		<tr>
+			<td><input type="text" id="outputi" size="30"></td>
+			<td><input type="text" id="amounti"></td>
+		</tr>
+		<tr>
+			<td><input type="text" id="changeout" size="30"></td>
+			<td><input type="text" id="changeamt"></td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
+
+<p>WIF Private Key of Input</p>
+<input type="text" id="wifi" size="45">
+<br>
+<button onclick="return createTx();">Create Transaction</button>
+<br>
+<textarea id="signedtxoutput" readonly cols="45" rows="3"></textarea>
+
 <script>
-let newPair = buidl.createP2PKH();
-let address = newPair.addr;
-let privateKey = newPair.pk;
-console.log(address, privateKey);
+function createTx(){
+	let typei = document.getElementById("typei").value.trim();
+	let txidi = document.getElementById("txidi").value.trim();
+	let outni = parseInt(document.getElementById("outni").value.trim());
+	let inputvalue = parseInt(document.getElementById("inputvalue").value.trim());
+	inputvalue ? inputvalue : null;
+	let outputi = document.getElementById("outputi").value.trim();
+	let amounti = parseInt(document.getElementById("amounti").value.trim());
+	let changeout = document.getElementById("changeout").value.trim();
+	changeout ? changeout : null;
+	let changeamt = parseInt(document.getElementById("changeamt").value.trim());
+	changeamt ? changeamt : null;
+	let wifi = document.getElementById("wifi").value.trim();
+	let rawtx = buidl.createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue);
+	document.getElementById("signedtxoutput").innerHTML = rawtx.signedtx;
+}
+function checkWitness(){
+    let checkType = document.getElementById("typei").value.trim();
+	if(checkType === "1"){
+		document.getElementById("inputvalue").disabled = true;
+	} else {
+		document.getElementById("inputvalue").disabled = false;
+	}
+}
 </script>
 </body>
 </html>

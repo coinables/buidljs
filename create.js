@@ -1,4 +1,6 @@
-const bitcoin = require("bitcoinjs-lib");
+let bitcoin = require("bitcoinjs-lib");
+bitcoin.bigi = require('bigi');
+bitcoin.Buffer = require('safe-buffer').Buffer;
 
 function createP2PKH(){
 	  var NETWORK = bitcoin.networks.bitcoin;
@@ -236,6 +238,8 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 	
 }
 
+
+
 module.exports = {
 	createP2PKH,
 	createP2WPKH,
@@ -243,7 +247,8 @@ module.exports = {
 	getNewAddress,
 	getDetails,
 	validateAddress,
-	createTransaction
+	createTransaction,
+	bitcoin
 }
 
 //binding functions to buidl 
