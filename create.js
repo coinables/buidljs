@@ -1,6 +1,8 @@
 let bitcoin = require("bitcoinjs-lib");
 bitcoin.bigi = require('bigi');
 bitcoin.Buffer = require('safe-buffer').Buffer;
+let bip38 = require('bip38');
+bip38.wifEnc = require('wif');
 
 function createP2PKH(){
 	  let NETWORK = bitcoin.networks.bitcoin;
@@ -67,9 +69,57 @@ function getNewAddress(){
 		  pk: wif,
 		  p2pkh: p2pkhAddr,
 		  p2wpkh: p2wpkhAddr,
-		  p2shp2wpkh: p2shp2wpkhAddr ,
+		  p2shp2wpkh: p2shp2wpkhAddr,
 		  redeemScript: redeemScriptHex
 	  }; 
+}
+
+function bip38Encrypt(key, phrase){
+	  let NETWORK = bitcoin.networks.bitcoin;
+	  let keyPair = bitcoin.ECPair.fromWIF(key, NETWORK);
+	  
+	  //p2pkh
+	  let p2pkhAddr = keyPair.getAddress();
+	  
+	  //native witness
+	  let pubKey = keyPair.getPublicKeyBuffer();
+	  let scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	  let p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	  
+	  //p2sh witness
+	  let pubKeyHash = bitcoin.crypto.hash160(pubKey);
+	  let redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+	  let redeemScriptHex = redeemScript.toString('hex');
+	  let redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+	  let scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+	  let p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
+	  
+	  if(phrase != null){
+		  let decoded = bip38.wifEnc.decode(key);
+		  let encryptedKey = bip38.encrypt(decoded.privateKey, decoded.compressed, phrase);
+		  return {
+			  pk: encryptedKey,
+			  p2pkh: p2pkhAddr,
+			  p2wpkh: p2wpkhAddr,
+			  p2shp2wpkh: p2shp2wpkhAddr,
+			  redeemScript: redeemScriptHex
+		  }; 
+	  } else {
+		  let encryptedKey = "missing passphrase parameter";
+		  return {
+			  pk: encryptedKey,
+			  p2pkh: p2pkhAddr,
+			  p2wpkh: p2wpkhAddr,
+			  p2shp2wpkh: p2shp2wpkhAddr,
+			  redeemScript: redeemScriptHex
+		  }; 
+	  } 
+}
+
+function bip38Decrypt(encryptedKey, phrase){
+	let decryptedKey = bip38.decrypt(encryptedKey, phrase);
+    let decryptFinish = bip38.wifEnc.encode(0x80, decryptedKey.privateKey, decryptedKey.compressed);
+	console.log(decryptFinish);
 }
 
 function getDetails(inputWIF){
@@ -281,6 +331,8 @@ module.exports = {
 	validateAddress,
 	createTransaction,
 	createFrom,
+	bip38Encrypt,
+	bip38Decrypt,
 	bitcoin
 }
 

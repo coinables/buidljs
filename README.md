@@ -1,14 +1,15 @@
 # Buidl.js 
 
-Buidl.js is a bitcoinjs-lib wrapper. This is intended as a tool for developers, hobbyists and crypto-enthusiasts looking for an easy way to create bitcoin keys and build and sign transactions offline without having the hurdle of having to learn the bitcoinjs-lib library. Buidl.js is a simplified (and therefore less powerful) approach to pro grammatically working with bitcoin in javascript. It is NOT intended for production use -- it is 100% client-side javascript.
+Buidl.js is a wrapper for the bitcoinjs-lib library. This is intended as a tool for developers, curious hobbyists and crypto-enthusiasts looking for an easy way to programmably create bitcoin keys, and build and sign transactions offline. These transactions are live bitcoin transactions that could potentially be broadcast to a node or API if you choose. This wrapper is a simplified approach to bitcoin javascript development for beginners without having to learn the bitcoinjs-lib library, which means it is very limited in features and customizations compared to what one can do with bitcoinjs-lib. It is NOT intended for production use -- it is 100% client-side javascript. USE AT YOUR OWN RISK.
 
 # Usage
 0. Save a copy of buidl.js or clone the repo
 
  *  `git clone https://github.com/coinables/buidljs.git`
  
+NOTE: If you cloned the repository the create.js file is the pre-browserify source to buidl.js.
  
-1. Include `buidl.js` in your webpage
+1. Include `buidl.js` in your HTML
 
  *  `<script src="path/to/buidl.js"></script>`
 
@@ -35,7 +36,7 @@ Buidl.js is a bitcoinjs-lib wrapper. This is intended as a tool for developers, 
 		<body>
 		<script>
 		let newPair = buidl.createFrom("satoshi");
-		let address = newPair.addr;
+		let address = newPair.p2pkh;
 		let privateKey = newPair.pk;
 		console.log(address, privateKey);
 		</script>
@@ -59,7 +60,7 @@ Buidl.js is a bitcoinjs-lib wrapper. This is intended as a tool for developers, 
 
  * createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue)
  
- typei - string, indicate input type by using 1st character of address type spending from
+ typei - string, indicate input type by using the first character of address type spending from
  txidi - string, transaction id of unspent output being spent
  outni - integer, nout value of the unspent output being spent
  outputi - string, address of output "receiving" address
@@ -82,7 +83,17 @@ This function will return an object with the key "signedtx" which will contain t
 See test.html for an example of using the `createTransaction()` function.    
 
 	
-## Additional Info
+## Available Functions
+
+`createP2PKH` - Creates a random legacy Pay-to-Public-Key-Hash key pair
+`createP2WPKH` - Creates a random native (bech32) segwit key pair
+`createP2SHP2WPKH` - Creates a random p2sh wrapped segwit key pair
+`getNewAddress` - Creates a random key pair and outputs all 3 address types (P2PKH, P2WPKH, P2SH-P2WPKH)
+`createFrom` - Create a key pair from a sha256 of an arbitrary string 
+`getDetails` - Takes a WIF private key and outputs all 3 address types, redeem script and public key
+`validateAddress` - Returns true if input is a valid bitcoin address
+`createTransaction` - Builds and signs a raw transaction 
+
 
 		
 =======
