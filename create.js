@@ -3,10 +3,10 @@ bitcoin.bigi = require('bigi');
 bitcoin.Buffer = require('safe-buffer').Buffer;
 
 function createP2PKH(){
-	  var NETWORK = bitcoin.networks.bitcoin;
-	  var wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
-	  var keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
-	  var newaddy = keyPair.getAddress();
+	  let NETWORK = bitcoin.networks.bitcoin;
+	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
+	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
+	  let newaddy = keyPair.getAddress();
 	  return {
 		  pk: wif,
 		  addr: newaddy
@@ -14,12 +14,12 @@ function createP2PKH(){
 }
 
 function createP2WPKH(){
-	  var NETWORK = bitcoin.networks.bitcoin;
-	  var wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
-	  var keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
-	  var pubKey = keyPair.getPublicKeyBuffer();
-	  var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
-	  var newaddy = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	  let NETWORK = bitcoin.networks.bitcoin;
+	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
+	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
+	  let pubKey = keyPair.getPublicKeyBuffer();
+	  let scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	  let newaddy = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
 	  return {
 		  pk: wif,
 		  addr: newaddy
@@ -27,15 +27,15 @@ function createP2WPKH(){
 }
 
 function createP2SHP2WPKH(){
-	  var NETWORK = bitcoin.networks.bitcoin;
-	  var wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
-	  var keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
-	  var pubKey = keyPair.getPublicKeyBuffer();
-	  var pubKeyHash = bitcoin.crypto.hash160(pubKey);
-	  var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
-	  var redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
-	  var scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
-	  var newaddy = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	  let NETWORK = bitcoin.networks.bitcoin;
+	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
+	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
+	  let pubKey = keyPair.getPublicKeyBuffer();
+	  let pubKeyHash = bitcoin.crypto.hash160(pubKey);
+	  let redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+	  let redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+	  let scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+	  let newaddy = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
 	  return {
 		  pk: wif,
 		  addr: newaddy
@@ -43,25 +43,25 @@ function createP2SHP2WPKH(){
 }
 
 function getNewAddress(){
-	  var NETWORK = bitcoin.networks.bitcoin;
-	  var wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
-	  var keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
+	  let NETWORK = bitcoin.networks.bitcoin;
+	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
+	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  
 	  //p2pkh
-	  var p2pkhAddr = keyPair.getAddress();
+	  let p2pkhAddr = keyPair.getAddress();
 	  
 	  //native witness
-	  var pubKey = keyPair.getPublicKeyBuffer();
-	  var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
-	  var p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	  let pubKey = keyPair.getPublicKeyBuffer();
+	  let scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	  let p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
 	  
 	  //p2sh witness
-	  var pubKeyHash = bitcoin.crypto.hash160(pubKey);
-	  var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
-	  var redeemScriptHex = redeemScript.toString('hex');
-	  var redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
-	  var scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
-	  var p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
+	  let pubKeyHash = bitcoin.crypto.hash160(pubKey);
+	  let redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+	  let redeemScriptHex = redeemScript.toString('hex');
+	  let redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+	  let scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+	  let p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
 	  
 	  return {
 		  pk: wif,
@@ -73,26 +73,26 @@ function getNewAddress(){
 }
 
 function getDetails(inputWIF){
-	  var NETWORK = bitcoin.networks.bitcoin;
-	  var wif = inputWIF;
-	  var keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
+	  let NETWORK = bitcoin.networks.bitcoin;
+	  let wif = inputWIF;
+	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  
 	  //p2pkh
-	  var p2pkhAddr = keyPair.getAddress();
+	  let p2pkhAddr = keyPair.getAddress();
 	  
 	  //native witness
-	  var pubKey = keyPair.getPublicKeyBuffer();
-	  var pubKeyHex = pubKey.toString('hex');
-	  var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
-	  var p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	  let pubKey = keyPair.getPublicKeyBuffer();
+	  let pubKeyHex = pubKey.toString('hex');
+	  let scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	  let p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
 	  
 	  //p2sh witness
-	  var pubKeyHash = bitcoin.crypto.hash160(pubKey);
-	  var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
-	  var redeemScriptHex = redeemScript.toString('hex');
-	  var redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
-	  var scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
-	  var p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
+	  let pubKeyHash = bitcoin.crypto.hash160(pubKey);
+	  let redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+	  let redeemScriptHex = redeemScript.toString('hex');
+	  let redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+	  let scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+	  let p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
 	  
 	  return {
 		  pk: wif,
@@ -238,7 +238,39 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 	
 }
 
-
+function createFrom(srcInput){
+	let NETWORK = bitcoin.networks.bitcoin;
+	let hashInput = srcInput;
+	let hash = bitcoin.crypto.sha256(bitcoin.Buffer.from(hashInput));
+    let d = bitcoin.bigi.fromBuffer(hash);
+    let keyPair = new bitcoin.ECPair(d);
+    //p2pkh
+	let wif = keyPair.toWIF();
+	let p2pkhAddr = keyPair.getAddress();
+	  
+	//native witness
+	let pubKey = keyPair.getPublicKeyBuffer();
+	let pubKeyHex = pubKey.toString('hex');
+	let scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+	let p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	
+	//p2sh witness
+	let pubKeyHash = bitcoin.crypto.hash160(pubKey);
+	let redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+	let redeemScriptHex = redeemScript.toString('hex');
+	let redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+	let scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+	let p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
+	  
+	return {
+		  pk: wif,
+		  p2pkh: p2pkhAddr,
+		  p2wpkh: p2wpkhAddr,
+		  p2shp2wpkh: p2shp2wpkhAddr, 
+		  redeemScript: redeemScriptHex, 
+		  publicKey: pubKeyHex
+	 }; 
+}
 
 module.exports = {
 	createP2PKH,
@@ -248,6 +280,7 @@ module.exports = {
 	getDetails,
 	validateAddress,
 	createTransaction,
+	createFrom,
 	bitcoin
 }
 
