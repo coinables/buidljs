@@ -4,8 +4,8 @@ bitcoin.Buffer = require('safe-buffer').Buffer;
 let bip38 = require('bip38');
 bip38.wifEnc = require('wif');
 
-function createP2PKH(){
-	  let NETWORK = bitcoin.networks.bitcoin;
+function createP2PKH(networkInput){
+	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
 	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  let newaddy = keyPair.getAddress();
@@ -15,8 +15,8 @@ function createP2PKH(){
 	  }; 
 }
 
-function createP2WPKH(){
-	  let NETWORK = bitcoin.networks.bitcoin;
+function createP2WPKH(networkInput){
+	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
 	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  let pubKey = keyPair.getPublicKeyBuffer();
@@ -28,8 +28,8 @@ function createP2WPKH(){
 	  };
 }
 
-function createP2SHP2WPKH(){
-	  let NETWORK = bitcoin.networks.bitcoin;
+function createP2SHP2WPKH(networkInput){
+	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
 	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  let pubKey = keyPair.getPublicKeyBuffer();
@@ -44,8 +44,8 @@ function createP2SHP2WPKH(){
 	  };
 }
 
-function getNewAddress(){
-	  let NETWORK = bitcoin.networks.bitcoin;
+function getNewAddress(networkInput){
+	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	  let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
 	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  
@@ -74,8 +74,8 @@ function getNewAddress(){
 	  }; 
 }
 
-function bip38Encrypt(key, phrase){
-	  let NETWORK = bitcoin.networks.bitcoin;
+function bip38Encrypt(key, phrase, networkInput){
+	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	  let keyPair = bitcoin.ECPair.fromWIF(key, NETWORK);
 	  
 	  //p2pkh
@@ -119,11 +119,13 @@ function bip38Encrypt(key, phrase){
 function bip38Decrypt(encryptedKey, phrase){
 	let decryptedKey = bip38.decrypt(encryptedKey, phrase);
     let decryptFinish = bip38.wifEnc.encode(0x80, decryptedKey.privateKey, decryptedKey.compressed);
-	console.log(decryptFinish);
+	return {
+		addr: decryptFinish
+	};
 }
 
-function getDetails(inputWIF){
-	  let NETWORK = bitcoin.networks.bitcoin;
+function getDetails(inputWIF, networkInput){
+	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	  let wif = inputWIF;
 	  let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
 	  
@@ -163,7 +165,8 @@ function validateAddress(address){
 	  }
 }
 
-function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue){
+function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue, networkInput){
+	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	//typei indicate input type by using 1st character of address type spending from
 	//examples 
 	//createTransaction("1", "34eceJ...  > spends from p2pkh
@@ -176,8 +179,7 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 	if(typei=="1"){
 		//legacy address starts with a 1
 		//create transaction
-		let mainnet = bitcoin.networks.bitcoin;
-		let txb = new bitcoin.TransactionBuilder(mainnet);
+		let txb = new bitcoin.TransactionBuilder(NETWORK);
 
 		let txid = txidi;
 		let outn = outni;
@@ -195,7 +197,7 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 		
 		//sign transaction
 		let WIF = wifi;
-		let keypairSpend = bitcoin.ECPair.fromWIF(WIF, mainnet);
+		let keypairSpend = bitcoin.ECPair.fromWIF(WIF, NETWORK);
 		txb.sign(0,keypairSpend);
 
 		//buidl transaction
@@ -207,8 +209,8 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 	} else if(typei=="3"){
 		//p2sh segwit, starts with a 3
 		//create transaction
-		let mainnet = bitcoin.networks.bitcoin;
-		let txb = new bitcoin.TransactionBuilder(mainnet);
+		//create transaction
+		let txb = new bitcoin.TransactionBuilder(NETWORK);
 
 		let txid = txidi;
 		let outn = outni;
@@ -245,8 +247,8 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 	} else if(typei=="b"){
 		//bech32 native segwit
 		//create transaction
-		let mainnet = bitcoin.networks.bitcoin;
-		let txb = new bitcoin.TransactionBuilder(mainnet);
+		//create transaction
+		let txb = new bitcoin.TransactionBuilder(NETWORK);
 
 		let txid = txidi;
 		let outn = outni;
@@ -288,8 +290,8 @@ function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeou
 	
 }
 
-function createFrom(srcInput){
-	let NETWORK = bitcoin.networks.bitcoin;
+function createFrom(srcInput, networkInput){
+	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	let hashInput = srcInput;
 	let hash = bitcoin.crypto.sha256(bitcoin.Buffer.from(hashInput));
     let d = bitcoin.bigi.fromBuffer(hash);
@@ -322,6 +324,22 @@ function createFrom(srcInput){
 	 }; 
 }
 
+function fromXpub(xpub, acctNumber, keyindex){
+	let address = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex).getAddress();
+	return{
+		addr: address
+	};	
+}
+
+function fromHDSeed(seed, account, change, index){
+   let path = "m/0'/"+account+"/"+change+"/"+index;
+   let root = bitcoin.HDNode.fromSeedHex(seed);
+   let child1 = root.derivePath(path);
+   return{
+	   child1
+   }
+}
+
 module.exports = {
 	createP2PKH,
 	createP2WPKH,
@@ -333,6 +351,8 @@ module.exports = {
 	createFrom,
 	bip38Encrypt,
 	bip38Decrypt,
+	fromXpub,
+	fromHDSeed,
 	bitcoin
 }
 
