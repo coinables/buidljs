@@ -17,7 +17,7 @@ NOTE: If you cloned the repository the create.js file is the pre-browserify sour
 
 ## 2. Create a random key pair
 
-        <head>
+		<head>
 		<script src="buidl.js"></script>
 		</head>
 		<body>
@@ -45,7 +45,7 @@ NOTE: If you cloned the repository the create.js file is the pre-browserify sour
 
 ## 4. Get details of a private key
 
-        <head>
+		<head>
 		<script src="buidl.js"></script>
 		</head>
 		<body>
@@ -97,40 +97,48 @@ If you pass the string "testnet" as the last parameter to any function you can e
 `createP2SHP2WPKH` - Creates a random p2sh wrapped segwit key pair   
 		`{pk: "KwXXRZUaMaGCHMbbd3kB6N3vmyqK48s2Ha9Ymw9yvzAoWyn59vFS", addr: "3DbnaQaajcLHcBphyDZ1AdikuAJ8r2VugX"}`     
 	
-`getNewAddress` - Creates a random key pair and outputs all 3 address types (P2PKH, P2WPKH, P2SH-P2WPKH)   
+`getNewAddress` - Creates a random key pair and outputs all 3 address types (P2PKH, P2WPKH, P2SH-P2WPKH)  
+ 
 		{pk: "KwnP8HN5rPahxnPvrBX2vpHcYyJ5TtaoEsfkBvvdAbX4Q3Yy8DjH", 
 		p2pkh: "1N75qvRHxCMjPNjLUHtmdTFJrVCmjo8TQQ", 
 		p2wpkh: "bc1qu7qju2u8q5nnmwf2kjr8jla7n6jqjzvhyqjx76", 
 		p2shp2wpkh: "3LLhaQgC5KZ5TETmTUHA6BgeLQPMJ4ePV7", 
-		redeemScript: "0014e7812e2b8705273db92ab486797fbe9ea4090997"}    
+		redeemScript: "0014e7812e2b8705273db92ab486797fbe9ea4090997"}     
+		
 	
-`createFrom("molly aqua jump tuba ratchet while")` - 1 parameter (string). Creates a key pair from a sha256 of an arbitrary string a.k.a. brain wallet.      
-		{pk:"L5h92N3b6djz45sr5Qx8KTkm7cQNgz7boanZQDJ5dBRHgo3eQr9L",
-		p2pkh:"14KAfpWgxnSaVSqBeTTmem8sJozfpBYUeB",
-		p2shp2wpkh:"3JT1WjLkzovMBkwirCWqjuLs7h4UGtjecm",
-		p2wpkh:"bc1qy3t7l2wcjmveqlp8gd7x34drkc77fgddupyhzj",
-		publicKey:"020feae0933265694cf7d19e60e47a417bf6802162982ca2ef338983d74de24567",
-		redeemScript:"00142457efa9d896d9907c27437c68d5a3b63de4a1ad"}     
-	 
-`getDetails("L1RLQhj...")` - 1 parameter (string). Takes a WIF private key and outputs all 3 address types, redeem script and public key     
+`createFrom("molly aqua jump tuba ratchet while")` - 1 parameter (string). Creates a key pair from a sha256 of an arbitrary string a.k.a. brain wallet.   
+    
 		{pk:"L5h92N3b6djz45sr5Qx8KTkm7cQNgz7boanZQDJ5dBRHgo3eQr9L",
 		p2pkh:"14KAfpWgxnSaVSqBeTTmem8sJozfpBYUeB",
 		p2shp2wpkh:"3JT1WjLkzovMBkwirCWqjuLs7h4UGtjecm",
 		p2wpkh:"bc1qy3t7l2wcjmveqlp8gd7x34drkc77fgddupyhzj",
 		publicKey:"020feae0933265694cf7d19e60e47a417bf6802162982ca2ef338983d74de24567",
 		redeemScript:"00142457efa9d896d9907c27437c68d5a3b63de4a1ad"}      
+		
+	 
+`getDetails("L1RLQhj...")` - 1 parameter (string). Takes a WIF private key and outputs all 3 address types, redeem script and public key   
+  
+		{pk:"L5h92N3b6djz45sr5Qx8KTkm7cQNgz7boanZQDJ5dBRHgo3eQr9L",
+		p2pkh:"14KAfpWgxnSaVSqBeTTmem8sJozfpBYUeB",
+		p2shp2wpkh:"3JT1WjLkzovMBkwirCWqjuLs7h4UGtjecm",
+		p2wpkh:"bc1qy3t7l2wcjmveqlp8gd7x34drkc77fgddupyhzj",
+		publicKey:"020feae0933265694cf7d19e60e47a417bf6802162982ca2ef338983d74de24567",
+		redeemScript:"00142457efa9d896d9907c27437c68d5a3b63de4a1ad"}	
+		
 	 
 `validateAddress("bc1hq...")` - 1 parameter (string). Returns true if input is a valid bitcoin address    
 		`true`      
 	
 `createTransaction` - 9 Parameters see Section 5 above. Builds and signs a raw transaction    
 
-`bip38Encrypt("L1RLqh...","satoshi")` - 2 parameters (string, string). Takes a WIF private key and a passphrase to encrypt the private key using BIP38.      
+`bip38Encrypt("L1RLqh...","satoshi")` - 2 parameters (string, string). Takes a WIF private key and a passphrase to encrypt the private key using BIP38.    
+     
 		{pk: "6PYUfFSV3gQhBEPHqeEWBYKiAkfL8EZUWNMJw56ATddy7AnqPWTouju53k", 
 		p2pkh: "14KAfpWgxnSaVSqBeTTmem8sJozfpBYUeB", 
 		p2wpkh: "bc1qy3t7l2wcjmveqlp8gd7x34drkc77fgddupyhzj", 
 		p2shp2wpkh: "3JT1WjLkzovMBkwirCWqjuLs7h4UGtjecm", 
-		redeemScript: "00142457efa9d896d9907c27437c68d5a3b63de4a1ad"}    
+		redeemScript: "00142457efa9d896d9907c27437c68d5a3b63de4a1ad"}	
+		
 	
 `bip38Decrypt("6PYUz..","satoshi")` - 2 parameters (string, string). Takes a BIP38 encrypted key and a passphrase to reveal the decrypted WIF private key.   
 
