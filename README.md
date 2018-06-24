@@ -134,6 +134,12 @@ If you pass the string "testnet" as the last parameter to any function you can e
 	
 `bip38Decrypt("6PYUz..","satoshi")` - 2 parameters (string, string). Takes a BIP38 encrypted key and a passphrase to reveal the decrypted WIF private key.   
 
+`multisig(pubkey1,pubkey2,pubkey3)` - 3 parameters (string, string, string). This function will take 3 public keys and creates a 2 of 3 multisig address.        
+
+`multisigRandom(m,n)` - 2 parameters (integer, integer). M must be less than N. Generates random private keys based on the inputs provided and outputs the multisig address, redeemscript and private keys needed to sign.     
+
+* The `createTransaction` function does not support multisig at this time *      
+
 
 Please consider donating if you find this tool useful.		
 

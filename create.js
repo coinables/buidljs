@@ -3,6 +3,7 @@ bitcoin.bigi = require('bigi');
 bitcoin.Buffer = require('safe-buffer').Buffer;
 let bip38 = require('bip38');
 bip38.wifEnc = require('wif');
+let bip65 = require('bip65');
 
 function createP2PKH(networkInput){
 	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -340,6 +341,97 @@ function fromHDSeed(seed, account, change, index){
    }
 }
 
+function multisig(pubKey1, pubKey2, pubKey3, networkInput){
+	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
+	let pubKeys = [
+      pubKey1,
+      pubKey2,
+      pubKey3
+    ].map(function (hex) { return Buffer.from(hex, 'hex') })
+
+    let redeemScript = bitcoin.script.multisig.output.encode(2, pubKeys); // 2 of 3
+    let scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript, NETWORK));
+    let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	let redeemHex = redeemScript.toString('hex');
+	return{
+		addr: address,
+		redeemScript: redeemHex
+	}
+}
+
+function multisigRandom(m,n,networkInput){
+	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
+	if(m>n){
+		return "your first parameter must be less than your second parameter";
+	}
+	let wifList = [];
+	let pubList = [];
+	for(var i=0;i<n;i++){
+		let wif = bitcoin.ECPair.makeRandom({network: NETWORK}).toWIF();
+		wifList.push(wif);
+		let keyPair = bitcoin.ECPair.fromWIF(wif, NETWORK);
+		let pubKey = keyPair.getPublicKeyBuffer();
+		let pubKeyHex = pubKey.toString('hex');
+		pubList.push(pubKeyHex);
+	}
+	
+	
+    let pubKeys = pubList.map(function (hex) { return Buffer.from(hex, 'hex') })
+	
+    let redeemScript = bitcoin.script.multisig.output.encode(m, pubKeys); // 2 of 3
+    let scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript, NETWORK));
+    let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	let redeemHex = redeemScript.toString('hex');
+	let wifListToString = wifList.join();
+	return{
+		addr: address,
+		redeemScript: redeemHex,
+		privateKeys: wifListToString
+	}
+}
+/*
+function cltv(privateKey, locktime, networkInput){
+	//still in works, do not use this function yet
+	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
+	
+	function cltvCheckSigOutput (ecPair, lockTimeInput) {
+		return bitcoin.script.compile([
+		  bitcoin.opcodes.OP_IF,
+		  bitcoin.script.number.encode(lockTimeInput),
+		  bitcoin.opcodes.OP_CHECKLOCKTIMEVERIFY,
+		  bitcoin.opcodes.OP_DROP,
+
+		  bitcoin.opcodes.OP_ELSE,
+		  bitcoin.opcodes.OP_NOP,
+		  bitcoin.opcodes.OP_ENDIF,
+
+		  ecPair.publicKey,
+		  bitcoin.opcodes.OP_CHECKSIG
+		])
+	  }		
+
+	  function utcNow () {
+		return Math.floor(Date.now() / 1000)
+	  }
+	
+	let ecPairInput = bitcoin.ECPair.fromWIF(privateKey, NETWORK);  
+	let lockTimeInput = bip65.encode({ utc: utcNow() + locktime });
+	let redeemScript = cltvCheckSigOutput(ecPairInput, lockTimeInput);
+	let redeemScriptHash160 = bitcoin.crypto.hash160(redeemScript);
+	var redeemScriptHex = redeemScript.toString("hex");
+	//redeemscriptHex output is not valid!!!
+	
+	let scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash160);
+	let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	
+	return {
+		addr: address,
+		redeemScript: redeemScriptHex
+	}
+}
+*/
+
+
 module.exports = {
 	createP2PKH,
 	createP2WPKH,
@@ -353,20 +445,13 @@ module.exports = {
 	bip38Decrypt,
 	fromXpub,
 	fromHDSeed,
+	multisig,
+	multisigRandom,
 	bitcoin
 }
 
 //binding functions to buidl 
 //browserify create.js --standalone buidl > buidl.js
 
-//main user preferred function names
-///////////////////////
-//getnewaddress
-//newaddress
-//newaddr
-///////////////////////
 
-//createnewtransaction
-//newtransaction
-//newtx
 
