@@ -119,7 +119,7 @@ function bip38Encrypt(key, phrase, networkInput){
 
 function bip38Decrypt(encryptedKey, phrase){
 	let decryptedKey = bip38.decrypt(encryptedKey, phrase);
-    let decryptFinish = bip38.wifEnc.encode(0x80, decryptedKey.privateKey, decryptedKey.compressed);
+	let decryptFinish = bip38.wifEnc.encode(0x80, decryptedKey.privateKey, decryptedKey.compressed);
 	return {
 		addr: decryptFinish
 	};
@@ -295,9 +295,9 @@ function createFrom(srcInput, networkInput){
 	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	let hashInput = srcInput;
 	let hash = bitcoin.crypto.sha256(bitcoin.Buffer.from(hashInput));
-    let d = bitcoin.bigi.fromBuffer(hash);
-    let keyPair = new bitcoin.ECPair(d);
-    //p2pkh
+	let d = bitcoin.bigi.fromBuffer(hash);
+	let keyPair = new bitcoin.ECPair(d);
+	//p2pkh
 	let wif = keyPair.toWIF();
 	let p2pkhAddr = keyPair.getAddress();
 	  
@@ -325,12 +325,14 @@ function createFrom(srcInput, networkInput){
 	 }; 
 }
 
+//HD functions are not in readme yet, still needs work to be easier to sync with trezor / mycelium and offer both witness and non-witness
 function fromXpub(xpub, acctNumber, keyindex){
 	let address = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex).getAddress();
 	return{
 		addr: address
 	};	
 }
+
 
 function fromHDSeed(seed, account, change, index){
    let path = "m/0'/"+account+"/"+change+"/"+index;
@@ -344,14 +346,14 @@ function fromHDSeed(seed, account, change, index){
 function multisig(pubKey1, pubKey2, pubKey3, networkInput){
 	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	let pubKeys = [
-      pubKey1,
-      pubKey2,
-      pubKey3
-    ].map(function (hex) { return Buffer.from(hex, 'hex') })
+		pubKey1,
+		pubKey2,
+		pubKey3
+	].map(function (hex) { return Buffer.from(hex, 'hex') })
 
-    let redeemScript = bitcoin.script.multisig.output.encode(2, pubKeys); // 2 of 3
-    let scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript, NETWORK));
-    let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	let redeemScript = bitcoin.script.multisig.output.encode(2, pubKeys); // 2 of 3
+	let scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript, NETWORK));
+	let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
 	let redeemHex = redeemScript.toString('hex');
 	return{
 		addr: address,
@@ -376,11 +378,11 @@ function multisigRandom(m,n,networkInput){
 	}
 	
 	
-    let pubKeys = pubList.map(function (hex) { return Buffer.from(hex, 'hex') })
+	let pubKeys = pubList.map(function (hex) { return Buffer.from(hex, 'hex') })
 	
-    let redeemScript = bitcoin.script.multisig.output.encode(m, pubKeys); // 2 of 3
-    let scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript, NETWORK));
-    let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	let redeemScript = bitcoin.script.multisig.output.encode(m, pubKeys); // 2 of 3
+	let scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript, NETWORK));
+	let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
 	let redeemHex = redeemScript.toString('hex');
 	let wifListToString = wifList.join();
 	return{
@@ -418,7 +420,7 @@ function cltv(privateKey, locktime, networkInput){
 	let lockTimeInput = bip65.encode({ utc: utcNow() + locktime });
 	let redeemScript = cltvCheckSigOutput(ecPairInput, lockTimeInput);
 	let redeemScriptHash160 = bitcoin.crypto.hash160(redeemScript);
-	var redeemScriptHex = redeemScript.toString("hex");
+	let redeemScriptHex = redeemScript.toString("hex");
 	//redeemscriptHex output is not valid!!!
 	
 	let scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash160);
