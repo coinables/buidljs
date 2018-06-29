@@ -157,6 +157,30 @@ function getDetails(inputWIF, networkInput){
 	  }; 
 }
 
+function pubToAddress(publicKey, networkInput){
+	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
+	let pubKeyBuffer = new Buffer(publicKey, 'hex');
+	let publicKeyHash = bitcoin.crypto.hash160(pubKeyBuffer);
+	//p2pkh
+	let address = bitcoin.address.toBase58Check(publicKeyHash, NETWORK.pubKeyHash);
+	//p2wpkh
+	let scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(publicKeyHash));
+	let p2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
+	//p2sh-p2wpkh
+	let redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(publicKeyHash);
+	let redeemScriptHex = redeemScript.toString('hex');
+	let redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+	let scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+	let p2shp2wpkhAddr = bitcoin.address.fromOutputScript(scriptPubKey2, NETWORK);
+	
+	return {
+		p2pkh: address,
+		p2wpkh: p2wpkhAddr, 
+		p2shp2wpkh: p2shp2wpkhAddr, 
+		redeemScript: redeemScriptHex
+	}
+}
+
 function validateAddress(address){
 	  try {
 		bitcoin.address.toOutputScript(address)
@@ -391,9 +415,9 @@ function multisigRandom(m,n,networkInput){
 		privateKeys: wifListToString
 	}
 }
-/*
+
 function cltv(privateKey, locktime, networkInput){
-	//still in works, do not use this function yet
+	
 	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	
 	function cltvCheckSigOutput (ecPair, lockTimeInput) {
@@ -421,7 +445,6 @@ function cltv(privateKey, locktime, networkInput){
 	let redeemScript = cltvCheckSigOutput(ecPairInput, lockTimeInput);
 	let redeemScriptHash160 = bitcoin.crypto.hash160(redeemScript);
 	let redeemScriptHex = redeemScript.toString("hex");
-	//redeemscriptHex output is not valid!!!
 	
 	let scriptPubKey = bitcoin.script.scriptHash.output.encode(redeemScriptHash160);
 	let address = bitcoin.address.fromOutputScript(scriptPubKey, NETWORK);
@@ -431,7 +454,7 @@ function cltv(privateKey, locktime, networkInput){
 		redeemScript: redeemScriptHex
 	}
 }
-*/
+
 
 
 module.exports = {
@@ -449,6 +472,8 @@ module.exports = {
 	fromHDSeed,
 	multisig,
 	multisigRandom,
+	cltv,
+	pubToAddress,
 	bitcoin
 }
 

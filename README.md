@@ -127,7 +127,14 @@ If you pass the string "testnet" as the last parameter to any function you can e
 		
 	 
 `validateAddress("bc1hq...")` - 1 parameter (string). Returns true if input is a valid bitcoin address    
-		`true`      
+		`true`
+
+
+`pubToAddress("020fea...")` - 1 parameter (string). Decodes public key and outputs all address types. 
+		{p2pkh:"1J16FUpZsS6My1FqHXpka5fztAnyFsBPf1",
+		p2shp2wpkh:"3CJbFEQNdESbYgShzGmVFYPfigMXAcDjGZ",
+		p2wpkh:"bc1qlk503az5jcspuu440qethw5q3kjmmm9cpa00yu",
+		redeemScript:"0014ba7e8540311391ae58035cb2a2b738dc223f7cb5"}
 	
 `createTransaction` - 9 Parameters see Section 5 above. Builds and signs a raw transaction    
 
