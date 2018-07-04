@@ -130,11 +130,13 @@ If you pass the string "testnet" as the last parameter to any function you can e
 		`true`
 
 
-`pubToAddress("020fea...")` - 1 parameter (string). Decodes public key and outputs all address types. 
-		{p2pkh:"1J16FUpZsS6My1FqHXpka5fztAnyFsBPf1",
-		p2shp2wpkh:"3CJbFEQNdESbYgShzGmVFYPfigMXAcDjGZ",
-		p2wpkh:"bc1qlk503az5jcspuu440qethw5q3kjmmm9cpa00yu",
-		redeemScript:"0014ba7e8540311391ae58035cb2a2b738dc223f7cb5"}
+`pubToAddress("03bcdd5e6e06ee2b9864cae3ab0df5f70b36ec9c40764b610848368acd20e2518a")` - 1 parameter (string). Decodes public key and outputs all address types.    
+	
+		{p2pkh: "1MbrKq1aYb5npy3yiStifk28JAkW5hSbi3"
+		p2shp2wpkh: "3R21MeWpfEgMU1bNeqM3gMbuoYpgaFf3sJ"
+		p2wpkh: "bc1qa73gekj7nk6yfcs8x2w82u6xfnpadgvrmgxqy9"
+		redeemScript: "0014e1f9d51e3e95f2156abb35ddcb1858c0d74dd5a6"} 
+	
 	
 `createTransaction` - 9 Parameters see Section 5 above. Builds and signs a raw transaction    
 
@@ -152,6 +154,8 @@ If you pass the string "testnet" as the last parameter to any function you can e
 `multisig(pubkey1,pubkey2,pubkey3)` - 3 parameters (string, string, string). This function will take 3 public keys and creates a 2 of 3 multisig address.        
 
 `multisigRandom(m,n)` - 2 parameters (integer, integer). M must be less than N. Generates random private keys based on the inputs provided and outputs the multisig address, redeemscript and private keys needed to sign.     
+	
+`sha256("some string", n)` = 2 parameters (string, integer). This function takes an input string and performs a sha256 hash function `n` times to the input.        
 
 * The `createTransaction` function does not support multisig at this time *      
 

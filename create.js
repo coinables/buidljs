@@ -190,6 +190,18 @@ function validateAddress(address){
 	  }
 }
 
+function sha256(shaInput, iterations){
+    z = shaInput;
+	for(i=0;i<iterations;i++){
+		let data = z;
+		z = bitcoin.crypto.sha256(data).toString('hex');
+	}
+	return z;
+}
+
+
+	
+
 function createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue, networkInput){
 	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 	//typei indicate input type by using 1st character of address type spending from
@@ -474,6 +486,7 @@ module.exports = {
 	multisigRandom,
 	cltv,
 	pubToAddress,
+	sha256,
 	bitcoin
 }
 
