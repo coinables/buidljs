@@ -155,7 +155,7 @@ If you pass the string "testnet" as the last parameter to any function you can e
 
 `multisigRandom(m,n)` - 2 parameters (integer, integer). M must be less than N. Generates random private keys based on the inputs provided and outputs the multisig address, redeemscript and private keys needed to sign.     
 	
-`sha256("some string", n)` = 2 parameters (string, integer). This function takes an input string and performs a sha256 hash function `n` times to the input.        
+`sha256("some string", n)` - 2 parameters (string, integer). This function takes an input string and performs a sha256 hash function `n` times to the input.        
 
 * The `createTransaction` function does not support multisig at this time *      
 
