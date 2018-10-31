@@ -32,7 +32,7 @@
     wallet.K = rawwallet.pk;
     wallet.S = rawwallet.p2shp2wpkh;
     wallet.L = rawwallet.p2pkh;
-    new QRCode(document.getElementById("QRPrv"),{text:"bitcoin:"+wallet.K,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
+    new QRCode(document.getElementById("QRPrv"),{text:wallet.K,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
     new QRCode(document.getElementById("QRLeg"),{text:"bitcoin:"+wallet.L,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
     new QRCode(document.getElementById("QRSeg"),{text:"bitcoin:"+wallet.S,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
     TXPrv.innerHTML = wallet.K;
