@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <script src="buidl.js" ></script>
+ </head>
+ <body onload="getWallet();">
+  <script>
+   function getWallet() {
+    var rawwallet = buidl.getNewAddress();
+    var wallet = new Object();
+    wallet.K = rawwallet.pk;           //Private Key
+    wallet.L = rawwallet.p2pkh;        //Legacy Payment Address
+    wallet.S = rawwallet.p2shp2wpkh;   //Segwit Payment Address
+    // wallet.B = rawwallet.p2wpkh;      //Bech32 Payment Address
+    // wallet.R = rawwallet.redeemScript;  //Spending Redeem Script
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET","https://blockchain.info/q/addressbalance/"+wallet.L,false);
+    xhttp.send();
+    wallet.VL = xhttp.responseText;
+    xhttp.open("GET","https://blockchain.info/q/addressbalance/"+wallet.S,false);
+    xhttp.send();
+    wallet.VS = xhttp.responseText;
+    var result = wallet.K+","+wallet.L+","+wallet.S+","+wallet.VL+","+wallet.VS;
+    // console.log(result);
+    return window.AppInventor.setWebViewString( result );
+   }
+  </script>
+ </body>
+</html>
