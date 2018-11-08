@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <script src="buidl.js" ></script>
+  <script src="qrcode.min.js" ></script>
+ </head>
+ <body onload="getWallet();">
+  <div id="container" class="{text-align:center;"}">
+   <table align="left" border="1" cellspacing="0" cellpadding="10" width="60%">
+    <caption><h2>BTC Super-Simple Paper Wallet</h2></caption>
+   	<tr align="left" valign="top">
+		   <th align="center">Private Key</th>
+		   <th align="center">Legacy Payment Address</th>
+		   <th align="center">Segwit Payment Address</th>
+	   </tr>
+	   <tr align="left" valign="top">
+		   <td align="center"><div id="QRPrv"></div></td>
+		   <td align="center"><div id="QRLeg"></div></td>
+		   <td align="center"><div id="QRSeg"></div></td>
+	   </tr>
+	   <tr align="left" valign="top">
+		   <td align="center"><small><small><small><div id="TXPrv"></div></small></small></small></td>
+		   <td align="center"><small><small><small><div id="TXLeg"></div></small></small></small></td>
+		   <td align="center"><small><small><small><div id="TXSeg"></div></small></small></small></td>
+	   </tr>
+   </table>
+  </div>
+  <script>
+   function getWallet() {
+    var wallet = new Object();
+    var rawwallet = buidl.getNewAddress();
+    wallet.K = rawwallet.pk;
+    wallet.S = rawwallet.p2shp2wpkh;
+    wallet.L = rawwallet.p2pkh;
+    new QRCode(document.getElementById("QRPrv"),{text:wallet.K,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
+    new QRCode(document.getElementById("QRLeg"),{text:"bitcoin:"+wallet.L,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
+    new QRCode(document.getElementById("QRSeg"),{text:"bitcoin:"+wallet.S,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});
+    TXPrv.innerHTML = wallet.K;
+    TXLeg.innerHTML = wallet.L;
+    TXSeg.innerHTML = wallet.S;
+    var result = JSON.stringify(wallet);
+    console.log(result);
+   }
+  </script>
+ </body>
+</html>
