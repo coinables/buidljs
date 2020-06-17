@@ -4,6 +4,7 @@
 <script src="buidl.js"></script>
 </head>
 <body>
+<select id="network"><option value="mainnet">Mainnet</option><option value="testnet">Testnet</option></select>
 <table width="100%">
 <tr>
 	<td width="65%"><h3>INPUT</h3>
@@ -52,6 +53,8 @@
 
 <script>
 function createTx(){
+	let network = document.getElementById("network").value;
+	let istestnet = network ==="testnet" ? "testnet" : "";
 	let typei = document.getElementById("typei").value.trim();
 	let txidi = document.getElementById("txidi").value.trim();
 	let outni = parseInt(document.getElementById("outni").value.trim());
@@ -64,7 +67,7 @@ function createTx(){
 	let changeamt = parseInt(document.getElementById("changeamt").value.trim());
 	changeamt ? changeamt : null;
 	let wifi = document.getElementById("wifi").value.trim();
-	let rawtx = buidl.createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue);
+	let rawtx = buidl.createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue, istestnet);
 	document.getElementById("signedtxoutput").innerHTML = rawtx.signedtx;
 }
 function checkWitness(){
