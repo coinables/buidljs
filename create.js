@@ -4,6 +4,7 @@ bitcoin.Buffer = require('safe-buffer').Buffer;
 let bip38 = require('bip38');
 bip38.wifEnc = require('wif');
 let bip65 = require('bip65');
+let bip39 = require('bip39');
 
 function createP2PKH(networkInput){
 	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -121,7 +122,7 @@ function bip38Decrypt(encryptedKey, phrase){
 	let decryptedKey = bip38.decrypt(encryptedKey, phrase);
 	let decryptFinish = bip38.wifEnc.encode(0x80, decryptedKey.privateKey, decryptedKey.compressed);
 	return {
-		addr: decryptFinish
+		pk: decryptFinish
 	};
 }
 
@@ -363,9 +364,9 @@ function createFrom(srcInput, networkInput){
 
 //HD functions are not in readme yet, still needs work to be easier to sync with trezor / mycelium and offer both witness and non-witness
 function fromXpub(xpub, acctNumber, keyindex){
-	let address = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex).getAddress();
+	let addr = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex).getAddress();
 	return{
-		addr: address
+		addr
 	};	
 }
 
@@ -373,11 +374,55 @@ function fromXpub(xpub, acctNumber, keyindex){
 function fromHDSeed(seed, account, change, index){
    let path = "m/0'/"+account+"/"+change+"/"+index;
    let root = bitcoin.HDNode.fromSeedHex(seed);
-   let child1 = root.derivePath(path);
+   let acct = root.derivePath("m/44'/0'/"+account+"'");
+   let xpub = acct.neutered().toBase58();
+   let pair = acct.derivePath(change+"/"+index).keyPair;
+   let address = pair.getAddress();
+   let wifkey = pair.toWIF();
    return{
-	   child1
+	   addr: address,
+	   pk: wifkey 
    }
 }
+
+function seedToXpub(seed, account){
+   let root = bitcoin.HDNode.fromSeedHex(seed);
+   let acct = root.derivePath("m/44'/0'/"+account+"'");
+   let xpub = acct.neutered().toBase58();
+   return{
+	   xpub
+   }
+}
+
+function newMnemonic(){
+	let words = bip39.generateMnemonic();
+	return{
+		words
+	}
+}
+
+function verifyMnemonic(phrase){
+	let validMnemonic = bip39.validateMnemonic(phrase);
+	return{
+		validMnemonic
+	}
+}
+
+function mnemonic2SeedHex(mnemonicInput){
+    seedHex = bip39.mnemonicToSeedSync(mnemonicInput).toString('hex')
+	return{
+		seedHex
+	}
+}
+
+function entropy2Mnemonic(entropySrc){
+	words = bip39.entropyToMnemonic(entropySrc);
+	return{
+		words
+	}
+}
+
+
 
 function multisig(pubKey1, pubKey2, pubKey3, networkInput){
 	let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -482,6 +527,11 @@ module.exports = {
 	bip38Decrypt,
 	fromXpub,
 	fromHDSeed,
+	seedToXpub,
+	newMnemonic,
+	verifyMnemonic,
+	mnemonic2SeedHex,
+	entropy2Mnemonic,
 	multisig,
 	multisigRandom,
 	cltv,
