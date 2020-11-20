@@ -161,17 +161,31 @@ If you pass the string "testnet" as the last parameter to any function you can e
 
     {words: "today lazy october deliver sphere scatter torch jeans topic shoot ramp peace"}
     
+    
 `mnemonic2SeedHex("today lazy october deliver sphere scatter torch jeans topic shoot ramp peace")` - 1 parameter (string). Converts a mnemonic phrase to a hexidecimal seed.
     
     `seedHex: "816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207"`
 
+
 `seedToXpub("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",0)` - 2 parameters (string, integer). First parameter is a hex seed. Second parameter is HD account.
 
-    `xpub: "xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6"`
+    xpub: "xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6"
+    
+    
+`seedToXprv("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",0)` - 2 parameters (string, integer). First  parameter is a hex seed. Second parameter is HD account.  
+
+    xprv: "xprv9yF3VtDnmsaRYL29cLUHBWpxDceZ6D549pcVcagS3ULbZ4pYDCnD3x2am2H8TnsZUzLquGEWxWrZRCV6Ded9SnGDwjcu583TThfdugrkgHa"
+    
 
 `fromXpub("xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6",0,0)` - 3 parameters (string, integer, integer). First parameter is xpub. Second is change address account. Third parameter is key index.
 
     `{addr: "1LsASXW6Z69jeKW9JaAKnwpcNXfaKUYbQY"}`
+    
+    
+`xprvToWIF("xprv9yF3VtDnmsaRYL29cLUHBWpxDceZ6D549pcVcagS3ULbZ4pYDCnD3x2am2H8TnsZUzLquGEWxWrZRCV6Ded9SnGDwjcu583TThfdugrkgHa",0,0)` - 3 parameters (string, integer, integer). First parameter is xprv. Second is change address account. Third parameter is key index. 
+
+    {wif: "KwwpeWxAMmLpxLQrZrpC9V6ThE1bYaW42ScbxCKQw76qgCqAPtQt"}
+    
     
 `fromHDSeed("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",0,0,0)` - 4 parameters (string, integer, integer, integer). First parameter is hex seed. Second is HD account. Third is change address account. Fourth is key index.
 
@@ -179,6 +193,7 @@ If you pass the string "testnet" as the last parameter to any function you can e
     addr: "1LsASXW6Z69jeKW9JaAKnwpcNXfaKUYbQY", 
     pk: "KwwpeWxAMmLpxLQrZrpC9V6ThE1bYaW42ScbxCKQw76qgCqAPtQt"
     }`
+
 
 * The `createTransaction` function does not support multisig at this time *      
 

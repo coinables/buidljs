@@ -370,6 +370,13 @@ function fromXpub(xpub, acctNumber, keyindex){
 	};	
 }
 
+function xprvToWIF(xprv, change, index){
+	let wif = bitcoin.HDNode.fromBase58(xprv).derivePath(change+"/"+index).keyPair.toWIF();
+	return{
+		wif
+	}
+}
+
 
 function fromHDSeed(seed, account, change, index){
    let path = "m/0'/"+account+"/"+change+"/"+index;
@@ -391,6 +398,15 @@ function seedToXpub(seed, account){
    let xpub = acct.neutered().toBase58();
    return{
 	   xpub
+   }
+}
+
+function seedToXprv(seed, account){
+   let root = bitcoin.HDNode.fromSeedHex(seed);
+   let acct = root.derivePath("m/44'/0'/"+account+"'");
+   let xprv = acct.toBase58();
+   return{
+	   xprv
    }
 }
 
@@ -526,8 +542,10 @@ module.exports = {
 	bip38Encrypt,
 	bip38Decrypt,
 	fromXpub,
+	xprvToWIF,
 	fromHDSeed,
 	seedToXpub,
+	seedToXprv,
 	newMnemonic,
 	verifyMnemonic,
 	mnemonic2SeedHex,
