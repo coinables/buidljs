@@ -379,7 +379,6 @@ function xprvToWIF(xprv, change, index){
 
 
 function fromHDSeed(seed, account, change, index){
-   let path = "m/0'/"+account+"/"+change+"/"+index;
    let root = bitcoin.HDNode.fromSeedHex(seed);
    let acct = root.derivePath("m/44'/0'/"+account+"'");
    let xpub = acct.neutered().toBase58();

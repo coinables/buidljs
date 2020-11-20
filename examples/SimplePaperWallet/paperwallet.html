@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="buidl.js"></script>
+<script src="qrcode.js"></script>
+</head>
+<body>
+<button id="createNewBtn" onclick="return newAddress();">Create New Address</button>
+<br>
+<table width="100%">
+<tr>
+<td><div id="QRaddr"></div></td>
+<td align="right"><div id="QRpk"></div></td>
+</tr>
+<tr>
+<td><div id="addr"></div></td>
+<td align="right"><div id="pk"></div></td>
+</tr>
+</table>
+<script>
+
+function newAddress(){
+   let newPair = buidl.createP2PKH();
+   let address = newPair.addr;
+   let privateKey = newPair.pk;
+   
+   document.getElementById("addr").innerHTML = address;
+   document.getElementById("pk").innerHTML = privateKey;
+
+   //blank out any existing QRcode
+   document.getElementById("QRaddr").innerHTML = "";
+   document.getElementById("QRpk").innerHTML = "";
+
+   new QRCode(document.getElementById("QRaddr"), address);
+   new QRCode(document.getElementById("QRpk"), privateKey);
+}
+</script>
+</body>
+</html>

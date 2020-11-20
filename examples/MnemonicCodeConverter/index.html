@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="buidl.js"></script>
+<link rel="stylesheet" href="bootstrap.min.css">
+</head>
+<body style="padding: 7px;">
+<h1>BIP39 Mnemonic Code Converter</h1>
+<button id="generate" onclick="return generateMnemonic();">Generate</button>
+<br><br>
+BIP39 Mnemonic: <input type="text" id="mnemonicOut" size="100"><button id="load" onclick="return loadMnemonic();">Load From Mnemonic</button>
+<br><br>
+BIP39 Seed: <input type="text" id="seedOut" size="150">
+<hr>
+<br>
+BIP: <input type="text" value="44" size=100 readonly disabled> 
+<br>
+Coin: <input type="text" value="0" size=100 readonly disabled>
+<br>
+Account: <input type="text" id="userAcct" value="0" size="100">
+<br>
+Change: <input type="text" id="userChange" value="0" size="100">
+<br><br>
+Account Xpub: <input type="text" id="xpubOut" size="150">
+<br>
+Account Xprv: <input type="text" id="xprvOut" size="150">
+<hr>
+<div id="addressOut">
+</div>
+<script>
+function generateMnemonic(){
+   var makeMnemonic = buidl.newMnemonic();
+   document.getElementById("mnemonicOut").value = makeMnemonic.words;
+   
+   var hexseed = buidl.mnemonic2SeedHex(makeMnemonic.words);
+   document.getElementById("seedOut").value = hexseed.seedHex;
+   
+   var userAcct = document.getElementById("userAcct").value;
+   var changeAcct = document.getElementById("userChange").value;
+   var makeXpub = buidl.seedToXpub(hexseed.seedHex, userAcct);
+   document.getElementById("xpubOut").value = makeXpub.xpub;
+   var makeXprv = buidl.seedToXprv(hexseed.seedHex, userAcct);
+   document.getElementById("xprvOut").value = makeXprv.xprv;
+   
+   var addressDiv = document.getElementById("addressOut");
+   addressDiv.innerHTML = '';
+   addressDiv.innerHTML += '<input type="text" value="Path"><input type="text" value="Address" size="50"><input type="text" value="Private Key WIF" size="70"><br>';
+   for(var i=0;i<25;i++){
+		var keypair = buidl.fromHDSeed(hexseed.seedHex,userAcct,changeAcct,i);
+		addressDiv.innerHTML += '<input type="text" value="m/44&#39;/0&#39;/'+userAcct+'&#39;/'+changeAcct+'&#39;/'+i+'"><input type="text" value="'+keypair.addr+'" size="50"><input type="text" value="'+keypair.pk+'" size="70"><br>';
+   }
+}
+function loadMnemonic(){
+   var getMnemonic = document.getElementById("mnemonicOut").value;
+      
+   var hexseed = buidl.mnemonic2SeedHex(getMnemonic);
+   document.getElementById("seedOut").value = hexseed.seedHex;
+   
+   var userAcct = document.getElementById("userAcct").value;
+   var changeAcct = document.getElementById("userChange").value;
+   var makeXpub = buidl.seedToXpub(hexseed.seedHex, userAcct);
+   document.getElementById("xpubOut").value = makeXpub.xpub;
+   var makeXprv = buidl.seedToXprv(hexseed.seedHex, userAcct);
+   document.getElementById("xprvOut").value = makeXprv.xprv;
+   
+   var addressDiv = document.getElementById("addressOut");
+   addressDiv.innerHTML = '';
+   addressDiv.innerHTML += '<input type="text" value="Path"><input type="text" value="Address" size="50"><input type="text" value="Private Key WIF" size="70"><br>';
+   for(var i=0;i<25;i++){
+		var keypair = buidl.fromHDSeed(hexseed.seedHex,userAcct,changeAcct,i);
+		addressDiv.innerHTML += '<input type="text" value="m/44&#39;/0&#39;/'+userAcct+'&#39;/'+changeAcct+'&#39;/'+i+'"><input type="text" value="'+keypair.addr+'" size="50"><input type="text" value="'+keypair.pk+'" size="70"><br>';
+   }
+}
+</script>
+</body>
+</html>
