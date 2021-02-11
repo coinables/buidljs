@@ -5,6 +5,7 @@ let bip38 = require('bip38');
 bip38.wifEnc = require('wif');
 let bip65 = require('bip65');
 let bip39 = require('bip39');
+let b58 = require('bs58check');
 
 function createP2PKH(networkInput){
 	  let NETWORK = networkInput === "testnet" ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -363,8 +364,27 @@ function createFrom(srcInput, networkInput){
 }
 
 //HD functions are not in readme yet, still needs work to be easier to sync with trezor / mycelium and offer both witness and non-witness
-function fromXpub(xpub, acctNumber, keyindex){
-	let addr = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex).getAddress();
+function fromXpub(xpub, acctNumber, keyindex, type){
+    if(type===1){
+        var addr = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex).getAddress();
+    } else if(type===3){
+        var wallet = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex);
+        //segwit p2sh
+        var pubKey = wallet.keyPair.getPublicKeyBuffer();
+        var pubKeyHash = bitcoin.crypto.hash160(pubKey);
+        var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+        var redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+        var scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+        var addr = bitcoin.address.fromOutputScript(scriptPubKey2);
+    } else if(type==="b"){
+        var wallet = bitcoin.HDNode.fromBase58(xpub).derivePath(acctNumber+"/"+keyindex);
+        //native witness
+        var pubKey = wallet.keyPair.getPublicKeyBuffer();
+        var pubKeyHex = pubKey.toString('hex');
+        var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+        var addr = bitcoin.address.fromOutputScript(scriptPubKey);
+    }
+    
 	return{
 		addr
 	};	
@@ -378,35 +398,79 @@ function xprvToWIF(xprv, change, index){
 }
 
 
-function fromHDSeed(seed, account, change, index){
+function fromHDSeed(seed, deriv, account, change, index){
    let root = bitcoin.HDNode.fromSeedHex(seed);
-   let acct = root.derivePath("m/44'/0'/"+account+"'");
+   let acct = root.derivePath("m/"+deriv+"'/0'/"+account+"'");
    let xpub = acct.neutered().toBase58();
    let pair = acct.derivePath(change+"/"+index).keyPair;
-   let address = pair.getAddress();
-   let wifkey = pair.toWIF();
+   var wifkey = pair.toWIF();
+    if(deriv===44){
+        var address = pair.getAddress();
+    } else if(deriv===49){
+        var pubKey = pair.getPublicKeyBuffer();
+        var pubKeyHash = bitcoin.crypto.hash160(pubKey);
+        var redeemScript = bitcoin.script.witnessPubKeyHash.output.encode(pubKeyHash);
+        var redeemScriptHash = bitcoin.crypto.hash160(redeemScript);
+        var scriptPubKey2 = bitcoin.script.scriptHash.output.encode(redeemScriptHash);
+        var address = bitcoin.address.fromOutputScript(scriptPubKey2);       
+    } else if(deriv===84){
+        var pubKey = pair.getPublicKeyBuffer();
+        var pubKeyHex = pubKey.toString('hex');
+        var scriptPubKey = bitcoin.script.witnessPubKeyHash.output.encode(bitcoin.crypto.hash160(pubKey));
+        var address = bitcoin.address.fromOutputScript(scriptPubKey);
+    }
+   
    return{
 	   addr: address,
 	   pk: wifkey 
    }
 }
 
-function seedToXpub(seed, account){
+function seedToXpub(seed, deriv, account){
    let root = bitcoin.HDNode.fromSeedHex(seed);
-   let acct = root.derivePath("m/44'/0'/"+account+"'");
-   let xpub = acct.neutered().toBase58();
+   let acct = root.derivePath("m/"+deriv+"'/0'/"+account+"'");
+   var xpub = acct.neutered().toBase58();
    return{
 	   xpub
    }
 }
 
-function seedToXprv(seed, account){
+function seedToXprv(seed, deriv, account){
    let root = bitcoin.HDNode.fromSeedHex(seed);
-   let acct = root.derivePath("m/44'/0'/"+account+"'");
+   let acct = root.derivePath("m/"+deriv+"'/0'/"+account+"'");
    let xprv = acct.toBase58();
    return{
 	   xprv
    }
+}
+
+function convertXpub(xpub,target){
+    //source script https://github.com/jlopp/xpub-converter/blob/master/js/xpubConvert.js
+    const prefixes = new Map(
+  [
+    ['xpub', '0488b21e'],
+    ['ypub', '049d7cb2'],
+    ['Ypub', '0295b43f'],
+    ['zpub', '04b24746'],
+    ['Zpub', '02aa7ed3'],
+    ['tpub', '043587cf'],
+    ['upub', '044a5262'],
+    ['Upub', '024289ef'],
+    ['vpub', '045f1cf6'],
+    ['Vpub', '02575483'],
+  ]
+  );
+    
+  xpub = xpub.trim();
+
+  try {
+    var data = b58.decode(xpub);
+    data = data.slice(4);
+    data = Buffer.concat([Buffer.from(prefixes.get(target),'hex'), data]);
+    return b58.encode(data);
+  } catch (err) {
+    return "Invalid extended public key! Please double check that you didn't accidentally paste extra data.";
+  }    
 }
 
 function newMnemonic(){
@@ -545,6 +609,7 @@ module.exports = {
 	fromHDSeed,
 	seedToXpub,
 	seedToXprv,
+    convertXpub,
 	newMnemonic,
 	verifyMnemonic,
 	mnemonic2SeedHex,

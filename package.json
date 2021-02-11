@@ -14,6 +14,7 @@
     "bip39": "^3.0.3",
     "bip65": "1.0.3",
     "bitcoinjs-lib": "3.3.2",
-    "browserify": "^16.2.3"
+    "browserify": "^16.2.3",
+    "bs58check": "^2.1.2"
   }
 }

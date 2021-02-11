@@ -56,8 +56,37 @@ NOTE: If you cloned the repository the create.js file is the pre-browserify sour
 		</script>
 		</body>
 
+## 5. HD Wallets, generate new mnemonic, convert to seed, extended public key, and address
+
+		<head>
+		<script src="buidl.js"></script>
+		</head>
+		<body>
+		<script>
+		var a = buidl.newMnemonic();
+        //words: "strong daring visa offer ten document bird shoulder mule dry wink laugh"
+        
+        //or create from entropy source
+        //var a = buidl.entropy2Mnemonic("somestrongentropysource123456789sss");
+        
+        var b = buidl.mnemonic2SeedHex(a.words);
+        //seedHex: "413fbecd04dfdac08e8bc9a6f3c99790f1b2fa98b65b9ef74e67aa663e36679160dc4a613f381c1a9cbc4a99a87f2f5f08a18e2a8209f36ea58f8ea6750c54ce"
+        
+        var c = buidl.seedToXpub(b.seedHex,84,0);
+        //xpub: "xpub6DXeLjqSQdivEAodgG9sxqmj4MV243NoRY2YBVZztNFLTaUFpWdqp3rwpsUFjF82eoKK2mVA1TqKnDqeeUL2oofYwt5xHrmWvKsbJQcvAge"
+        
+        var d = buidl.fromXpub(c.xpub,0,0,"b");
+        //addr: "bc1qzsg5xf3kmdrd8629p29vtvj39ep82rhjwx58dh"
+        
+        var e = buidl.convertXpub(c.xpub,"zpub");
+        //"zpub6sCAx5BGhzosvmBsLyj8P1xjQHmuwHMoFm4ykHMmeP16Zn6iKpxy4BBDsHPRj4RsU5YvXigGvnYRYo4n5sA4QH2kgZUoTgQVTmzt5XuC6qD"
+
+		</script>
+		</body>
+        
+              
 		
-## 5. Build and sign a transaction 
+## 6. Build and sign a transaction 
 
  * createTransaction(typei, txidi, outni, outputi, amounti, wifi, changeout, changeamt, inputvalue)
  
@@ -167,17 +196,17 @@ If you pass the string "testnet" as the last parameter to any function you can e
     `seedHex: "816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207"`
 
 
-`seedToXpub("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",0)` - 2 parameters (string, integer). First parameter is a hex seed. Second parameter is HD account.
+`seedToXpub("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",44,0)` - 3 parameters (string, ,integer, integer). First parameter is a hex seed. Second is derivation path (valid 44, 49, 84). Third parameter is HD account.
 
     xpub: "xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6"
     
     
-`seedToXprv("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",0)` - 2 parameters (string, integer). First  parameter is a hex seed. Second parameter is HD account.  
+`seedToXprv("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",44,0)` - 3 parameters (string, integer). First  parameter is a hex seed. Second is derivation path (valid 44, 49, 84). Third parameter is HD account.  
 
     xprv: "xprv9yF3VtDnmsaRYL29cLUHBWpxDceZ6D549pcVcagS3ULbZ4pYDCnD3x2am2H8TnsZUzLquGEWxWrZRCV6Ded9SnGDwjcu583TThfdugrkgHa"
     
 
-`fromXpub("xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6",0,0)` - 3 parameters (string, integer, integer). First parameter is xpub. Second is change address account. Third parameter is key index.
+`fromXpub("xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6",0,0,1)` - 4 parameters (string, integer, integer, integer/string). First parameter is xpub (do not use ypub or zpub, that is for external use only. Use the last parameter in this function to select address type). Second is change address account. Third parameter is key index. Fourth is address type, 1 = legacy, 3 = p2sh-segwit, "b" = bech32 segwit
 
     `{addr: "1LsASXW6Z69jeKW9JaAKnwpcNXfaKUYbQY"}`
     
@@ -187,7 +216,7 @@ If you pass the string "testnet" as the last parameter to any function you can e
     {wif: "KwwpeWxAMmLpxLQrZrpC9V6ThE1bYaW42ScbxCKQw76qgCqAPtQt"}
     
     
-`fromHDSeed("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",0,0,0)` - 4 parameters (string, integer, integer, integer). First parameter is hex seed. Second is HD account. Third is change address account. Fourth is key index.
+`fromHDSeed("816409492435b94d076308e3465ee497a216a7c084dffae9a0a32fb2da082f85fffb32d8e5e5f2f055ee6226f6f37626fa50e9e81607286d738aa724b838a207",44,0,0,0)` - 5 parameters (string, integer, integer, integer, integer). First parameter is hex seed. Second is derivation path (valid 44, 49, 84). Third is HD account. Fourth is change address account. Fifth is key index.
 
     `{
     addr: "1LsASXW6Z69jeKW9JaAKnwpcNXfaKUYbQY", 
