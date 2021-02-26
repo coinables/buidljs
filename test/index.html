@@ -77,6 +77,14 @@ account: <input type="number" id="seedToXpubp3" value="0"><br>
 <br>
 <textarea id="seedToXpubout" cols="130" rows="5"></textarea>
 <br><br>
+<h3>convertXpub(xpub, target)</h3>
+<p>Takes a xpub/ypub/zpub input and outputs to target type</p>
+xpub/ypub/zpub: <input type="text" id="convertXpubp1" size="100"><br>
+target: <select id="convertXpubp2"><option value="xpub">xpub</option><option value="ypub">ypub</option><option value="zpub">zpub</option></select><br>
+<button id="convertXpub" onclick="return convertXpubbtn();">convertXpub</button>
+<br>
+<textarea id="convertXpubout" cols="130" rows="5"></textarea>    
+<br><br>
 <h3>seedToXprv(seed, derivationPath, account)</h3>
 <p>3 parameters (string, ,integer, integer). First parameter is a hex seed. Second is derivation path (either 44, 49, 84). Third parameter is HD account.</p>
 seed: <input type="text" id="seedToXprvp1" size="100"><br>
@@ -84,8 +92,8 @@ derivationPath: <select id="seedToXprvp2"><option value="44">44</option><option 
 account: <input type="number" id="seedToXprvp3" value="0"><br>
 <button id="seedToXprv" onclick="return seedToXprvbtn();">seedToXprv</button>
 <br>
-<textarea id="seedToXprvout" cols="130" rows="5"></textarea>
-<br><br>
+<textarea id="seedToXprvout" cols="130" rows="5"></textarea>    
+<br><br>    
 <h3>fromHDSeed(seed, derivationPath, account, change, index)</h3>
 <p>Converts an HD Hex Seed to a key pair. 5 parameters (string, integer, integer, integer, integer). First parameter is hex seed. Second is derivation path (valid 44, 49, 84). Third is HD account. Fourth is change address account. Fifth is key index.</p>
 seed: <input type="text" id="fromHDSeedp1" size="100"><br>
@@ -106,17 +114,10 @@ type: <select id="fromXpubp4"><option value="1">Legacy starts with 1</option><op
 <button id="fromXpub" onclick="return fromXpubbtn();">fromXpub</button>
 <br>
 <textarea id="fromXpubout" cols="130" rows="5"></textarea>
-<br><br>
-<h3>convertXpub(xpub, target)</h3>
-<p>Takes a xpub/ypub/zpub input and outputs to target type</p>
-xpub/ypub/zpub: <input type="text" id="convertXpubp1" size="100"><br>
-target: <select id="convertXpubp2"><option value="xpub">xpub</option><option value="ypub">ypub</option><option value="zpub">zpub</option></select><br>
-<button id="convertXpub" onclick="return convertXpubbtn();">convertXpub</button>
-<br>
-<textarea id="convertXpubout" cols="130" rows="5"></textarea>
+
 <br><br>
 <br><br>
-<h3>Bulk From Xpub</h3>
+<h3>Bulk From Xpub/Ypub/Zpub</h3>
 xpub/ypub/zpub: <input type="text" id="bulkp1" size="100"><br>
 change: <input type="number" id="bulkp2" value="0"><br>
 depth: <input type="number" id="bulkp3" value="20"><br>
