@@ -114,7 +114,17 @@ type: <select id="fromXpubp4"><option value="1">Legacy starts with 1</option><op
 <button id="fromXpub" onclick="return fromXpubbtn();">fromXpub</button>
 <br>
 <textarea id="fromXpubout" cols="130" rows="5"></textarea>
-
+    
+<br><br>
+<h3>xprvToWIF(xprv/yprv/zprv, change, index)</h3>
+<p>3 parameters (string, integer, integer). First parameter is xprv/yprv/zprv. Second is change address account. Third parameter is key index.</p>
+xprv/yprv/zprv: <input type="text" id="xprvToWIF1" size="100"><br>
+change: <input type="number" id="xprvToWIF2" value="0"><br>
+index: <input type="number" id="xprvToWIF3" value="0"><br>
+<button id="xprvToWIF" onclick="return xprvToWIFbtn();">xprvToWIF</button>
+<br>
+<textarea id="xprvToWIFout" cols="130" rows="5"></textarea>
+    
 <br><br>
 <br><br>
 <h3>Bulk From Xpub/Ypub/Zpub</h3>
@@ -234,6 +244,13 @@ function fromXpubbtn(){
 	let address = buidl.fromXpub(p1,p2,p3,p4);
 	document.getElementById("fromXpubout").value = JSON.stringify(address);
 }
+function xprvToWIFbtn(){
+	let p1 = document.getElementById("xprvToWIF1").value;
+	let p2 = document.getElementById("xprvToWIF2").value;
+	let p3 = document.getElementById("xprvToWIF3").value;
+	let wif = buidl.xprvToWIF(p1,p2,p3);
+	document.getElementById("xprvToWIFout").value = JSON.stringify(wif);
+}    
 function convertXpubbtn(){
 	let p1 = document.getElementById("convertXpubp1").value;
 	let p2 = document.getElementById("convertXpubp2").value;
