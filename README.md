@@ -1,6 +1,14 @@
 # Buidl.js 
 
-Buidl.js is a wrapper for the bitcoinjs-lib library. This is intended as a tool for developers, curious hobbyists and crypto-enthusiasts looking for an easy way to programmably create bitcoin keys, and build and sign transactions offline. These transactions are live bitcoin transactions that could potentially be broadcast to a node or API if you choose. This wrapper is a simplified approach to bitcoin javascript development for beginners without having to learn the bitcoinjs-lib library, which means it is very limited in features and customizations compared to what one can do with bitcoinjs-lib. It is NOT intended for production use -- it is 100% client-side javascript. USE AT YOUR OWN RISK.
+Buidl.js was built from the bitcoinjs-lib library. 
+
+Want to use in your project? All you need to do is include buidl.js in your HTML and you are ready to start creating bitcoin keys, and build and sign transactions offline. 
+
+Buidl.js can be used to create browser-based client-side bitcoin wallets and tools. 
+
+Buidl.js is a simplified approach to bitcoin javascript development for beginners without having to learn the bitcoinjs-lib library. The intent is to expand the amount of developers that can develop bitcoin wallets and hopefully will lead to new, unique or otherwise novel wallet UIs. 
+
+USE AT YOUR OWN RISK.
 
 # Usage    
 
@@ -73,13 +81,11 @@ NOTE: If you cloned the repository the create.js file is the pre-browserify sour
         //seedHex: "413fbecd04dfdac08e8bc9a6f3c99790f1b2fa98b65b9ef74e67aa663e36679160dc4a613f381c1a9cbc4a99a87f2f5f08a18e2a8209f36ea58f8ea6750c54ce"
         
         var c = buidl.seedToXpub(b.seedHex,84,0);
-        //xpub: "xpub6DXeLjqSQdivEAodgG9sxqmj4MV243NoRY2YBVZztNFLTaUFpWdqp3rwpsUFjF82eoKK2mVA1TqKnDqeeUL2oofYwt5xHrmWvKsbJQcvAge"
+        //xpub: "zpub6sCAx5BGhzosvmBsLyj8P1xjQHmuwHMoFm4ykHMmeP16Zn6iKpxy4BBDsHPRj4RsU5YvXigGvnYRYo4n5sA4QH2kgZUoTgQVTmzt5XuC6qD"
         
-        var d = buidl.fromXpub(c.xpub,0,0,"b");
+        var d = buidl.fromXpub(c.xpub,0,0);
         //addr: "bc1qzsg5xf3kmdrd8629p29vtvj39ep82rhjwx58dh"
-        
-        var e = buidl.convertXpub(c.xpub,"zpub");
-        //"zpub6sCAx5BGhzosvmBsLyj8P1xjQHmuwHMoFm4ykHMmeP16Zn6iKpxy4BBDsHPRj4RsU5YvXigGvnYRYo4n5sA4QH2kgZUoTgQVTmzt5XuC6qD"
+               
 
 		</script>
 		</body>
@@ -206,7 +212,7 @@ If you pass the string "testnet" as the last parameter to any function you can e
     xprv: "xprv9yF3VtDnmsaRYL29cLUHBWpxDceZ6D549pcVcagS3ULbZ4pYDCnD3x2am2H8TnsZUzLquGEWxWrZRCV6Ded9SnGDwjcu583TThfdugrkgHa"
     
 
-`fromXpub("xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6",0,0,1)` - 4 parameters (string, integer, integer, integer/string). First parameter is xpub (do not use ypub or zpub, that is for external use only. Use the last parameter in this function to select address type). Second is change address account. Third parameter is key index. Fourth is address type, 1 = legacy, 3 = p2sh-segwit, "b" = bech32 segwit
+`fromXpub("xpub6CEPuPkgcF8ikp6ciN1HYemgmeV3VfnuX3Y6Qy63bosaRs9gkk6TbkM4cLgJJVLDMXoQu5F9CeNcVuHwttE7zPoUPKQ1tWaRNCFswbr14s6",0,0)` - 4 parameters (string, integer, integer, integer/string). First parameter is xpub (do not use ypub or zpub, that is for external use only. Use the last parameter in this function to select address type). Second is change address account. Third parameter is key index.
 
     `{addr: "1LsASXW6Z69jeKW9JaAKnwpcNXfaKUYbQY"}`
     
@@ -227,8 +233,17 @@ If you pass the string "testnet" as the last parameter to any function you can e
 * The `createTransaction` function does not support multisig at this time *      
 
 
+## Projects that use buidl.js
+* FastWallet.info
+* SegWitAddress.org
+
+
+If you have a project you would like listed, please create a pull request updating the README.md to include your project
+
+=================================================
+
 Please consider donating if you find this tool useful.		
 
-BTC:  3LnBzPmb3BkDUZBHLHdEj5vgxS6D6HjKLW
+BTC:  3LnFQjs5HracJn5cakAmGQ8N1PZey65kyJ
 
 
